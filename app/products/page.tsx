@@ -1,9 +1,18 @@
-import ProductCard from "../components/Product/ProductCard";
+import ProductList from "../components/Product/ProductList"
 
-export default function products(){
+const productsArray = [
+    {id: 1, image: 'placeholder.jpg', name: 'simple 1', price: 1234},
+    {id: 2, image: 'placeholder.jpg', name: 'simple 2', price: 1234},
+    {id: 3, image: 'placeholder.jpg', name: 'simple 3', price: 1234}
+]
+
+
+
+
+export default function Products(){
     return(
         <div>
-            <ProductCard image={'placeholder.jpg'} name={'sample product 1'} price={23.448984}/>
+            <ProductList products={productsArray}/>
         </div>
         
     )
