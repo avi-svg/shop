@@ -19,7 +19,6 @@ const ProductList = ({ products }: props) => {
         return (
           <Link key={product.id} href={`/products/${product.id}`}>
             <ProductCard
-              key={product.id}
               image={product.image}
               name={product.name}
               price={product.price}
