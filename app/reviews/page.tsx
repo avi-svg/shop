@@ -33,6 +33,23 @@ const Reviews = () => {
           );
         })}
       </div>
+      <form className={styles.reviewForm}>
+          <input type="text"
+          name="name"
+          placeholder="Your Name"
+          className={styles.input}
+          required />
+          <textarea name="content"
+          className={styles.textarea}
+          placeholder="Write your review here..."
+          required />
+          <button
+          type="submit"
+          className={styles.button}
+          >
+            Send Review
+          </button>
+      </form>
     </div>
   );
 };
