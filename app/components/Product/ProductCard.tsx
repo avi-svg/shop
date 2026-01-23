@@ -1,6 +1,6 @@
 import Link from "next/link";
 import styles from "./Product.module.css";
-import { ProductArray } from "@/types/ProductsTypes";
+
 
 type props = {
   id: number;

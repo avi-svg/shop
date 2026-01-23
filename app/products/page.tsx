@@ -1,6 +1,6 @@
 'use client';
 
-import { ProductArray } from "@/types/ProductsTypes";
+
 import ProductList from "../components/Product/ProductList"
 import { cartAtom } from "../store/CartAtom";
 import { useSetAtom } from "jotai";

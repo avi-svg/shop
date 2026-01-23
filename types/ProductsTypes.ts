@@ -8,17 +8,4 @@ export type CartItem = {
     price: number
 }
 
-export type props = {
-  id: number;
-  image: string;
-  name: string;
-  price: number;
-  onProductAddClicked: () => ProductArray
-};
 
-export type ProductArray = {
-  id: number;
-  image: string;
-  name: string;
-  price: number;
-};
