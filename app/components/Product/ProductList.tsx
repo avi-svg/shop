@@ -1,29 +1,37 @@
-import ProductCard from "./ProductCard";
-import Link from "next/link";
 
-type Products = {
+import ProductCard from "./ProductCard";
+
+
+
+
+type Product = {
   id: number;
   image: string;
   name: string;
   price: number;
 };
 
-type props = {
-  products: Products[];
+type Props = {
+  products: Product[];
+  onProductAddClicked: (p: Product) => void;
 };
 
-const ProductList = ({ products }: props) => {
+
+
+
+const ProductList = ({ products, onProductAddClicked}: Props) => {
   return (
     <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
       {products.map((product) => {
         return (
-          <Link key={product.id} href={`/products/${product.id}`}>
-            <ProductCard
-              image={product.image}
-              name={product.name}
-              price={product.price}
-            />
-          </Link>
+          <ProductCard
+            key={product.id}
+            id={product.id}
+            image={product.image}
+            name={product.name}
+            price={product.price}
+            onClick={() => onProductAddClicked(product)}
+          />
         );
       })}
     </div>

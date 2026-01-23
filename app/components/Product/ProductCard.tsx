@@ -1,18 +1,26 @@
+import Link from "next/link";
 import styles from "./Product.module.css";
+import { ProductArray } from "@/types/ProductsTypes";
 
 type props = {
+  id: number;
   image: string;
   name: string;
   price: number;
+  onClick: () => void
 };
 
-const ProductCard = ({ image, name, price }: props) => {
+
+
+const ProductCard = ({ id, image, name, price, onClick}: props) => {
   return (
     <div className={styles.card}>
-      <img className={styles.image} src={image} alt={name} />
-      <h2 className={styles.name}>{name}</h2>
-      <p className={styles.price}>₪{price.toFixed(2)}</p>
-      <button className={styles.button}>ADD</button>
+      <Link href={`/products/${id}`}>
+        <img className={styles.image} src={image} alt={name} />
+        <h2 className={styles.name}>{name}</h2>
+        <p className={styles.price}>₪{price.toFixed(2)}</p>
+      </Link>
+      <button className={styles.button} onClick={onClick}>ADD</button>
     </div>
   );
 };

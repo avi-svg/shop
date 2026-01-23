@@ -5,7 +5,7 @@ import styles from "../[id]/page.module.css";
 import { useSetAtom } from "jotai";
 import { cartAtom } from "@/app/store/CartAtom";
 import { usePathname } from "next/navigation";
-import { Params } from "@/types/ProductsTypes";
+import { Params, props } from "@/types/ProductsTypes";
 
 
 
