@@ -1,14 +1,16 @@
-import { notFound } from "next/navigation";
+'use client';
+
+import { notFound, useParams } from "next/navigation";
 import styles from "../[id]/page.module.css";
+import { useSetAtom } from "jotai";
+import { cartAtom } from "@/app/store/CartAtom";
+import { usePathname } from "next/navigation";
+import { Params } from "@/types/ProductsTypes";
 
 
-type ParamsProps = {
-  params: Promise<{
-    id: string
-  }>
-};
 
-async function getProduct(id: string) {
+
+function getProduct(id: string) {
   const products = [
     {
       id: 1,
@@ -36,13 +38,23 @@ async function getProduct(id: string) {
   return products.find((product) => product.id.toString() === id);
 }
 
-export default async function ProductDetails({params}: ParamsProps) {
-  const {id} =  await params;
-  const product = await getProduct(id);
+export default  function ProductDetails() {
+  const {id} = useParams<Params>();
+  const product = getProduct(id);
 
   if (!product) {
     notFound();
   }
+
+  const setCartItems = useSetAtom(cartAtom)
+
+
+  const handelAddToCart = () => {
+    setCartItems((prevItems) => {
+      return [...prevItems, {...product}]
+    })
+  }
+
 
   return (
     <main className={styles.container}>
@@ -64,7 +76,7 @@ export default async function ProductDetails({params}: ParamsProps) {
           <hr className={styles.divider} />
           <section className={styles.bottomSection}>
             <p className={styles.price}>Price: ${product.price.toFixed(2)}</p>
-            <button className={styles.button}>Add to Cart</button>
+            <button className={styles.button} onClick={handelAddToCart}>Add to Cart</button>
           </section>
         </article>
       )}
