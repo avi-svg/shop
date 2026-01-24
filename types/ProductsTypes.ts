@@ -3,9 +3,11 @@ export type Params = {
 }
 
 export type CartItem = {
-    id?: number
-    name: string
-    price: number
+    id: number;
+    image: string;
+    name: string;
+    price: number;
+    description: string;
 }
 
 

@@ -1,42 +1,65 @@
-'use client';
+"use client";
 
-
-import ProductList from "../components/Product/ProductList"
+import ProductList from "../components/Product/ProductList";
+import styles from "./page.module.css";
 import { cartAtom } from "../store/CartAtom";
 import { useSetAtom } from "jotai";
-
-const productsArray = [
-    {id: 1, image: '/image/placeholder.jpg', name: 'simple 1', price: 1234},
-    {id: 2, image: '/image/placeholder.jpg', name: 'simple 2', price: 1234},
-    {id: 3, image: '/image/placeholder.jpg', name: 'simple 3', price: 1234}
-]
+import { useState, useEffect } from "react";
 
 type Product = {
   id: number;
   image: string;
   name: string;
   price: number;
+  description: string;
 };
 
+export default function Products() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-export default function Products(){
-
-      const setCartItems = useSetAtom(cartAtom)
-    
-    
-      const handelAddToCart = (product: Product) => {
-        setCartItems((prevItems) => {
-          return [...prevItems, {...product}]
-        })
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await fetch("http://localhost:3001/api/products");
+        if (!response.ok) {
+          throw new Error("Failed to fetch products");
+        }
+        const data = await response.json();
+        setProducts(data);
+      } catch (e) {
+        if (e instanceof Error) {
+          setError(e.message);
+        } else {
+          setError("unkown error");
+        }
+      } finally {
+        setLoading(false);
       }
 
-    return(
-        <div>
-            <ProductList 
-            products={productsArray}
-            onProductAddClicked={handelAddToCart}
-            />
-        </div>
-        
-    )
-};
+    };
+
+    fetchProduct();
+  }, []);
+
+  const setCartItems = useSetAtom(cartAtom);
+
+  const handelAddToCart = (product: Product) => {
+    setCartItems((prevItems) => {
+      return [...prevItems, { ...product }];
+    });
+  };
+
+  return (
+    <div className={styles.container}>
+      {
+        loading && <p>Loading...</p>
+      }
+      {
+        error && <p>{error}</p>
+      }
+      <ProductList products={products} onProductAddClicked={handelAddToCart} />
+    </div>
+  );
+}

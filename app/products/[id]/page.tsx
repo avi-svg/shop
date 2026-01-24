@@ -1,84 +1,89 @@
-'use client';
+"use client";
 
 import { notFound, useParams } from "next/navigation";
-import styles from "../[id]/page.module.css";
+import styles from './page.module.css'
 import { useSetAtom } from "jotai";
 import { cartAtom } from "@/app/store/CartAtom";
 import { usePathname } from "next/navigation";
-import { Params, props } from "@/types/ProductsTypes";
+import { CartItem, Params } from "@/types/ProductsTypes";
+import { useState, useEffect } from "react";
+import ProductDetail from "./ProductDetailes";
+
+type Product = {
+  id: number;
+  image: string;
+  name: string;
+  price: number;
+  description: string;
+};
+
+export default function ProductDetails() {
+  
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const { id } = useParams<Params>();
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await fetch(`http://localhost:3001/api/products/${id}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch product");
+        }
+        const data = await response.json();
+        setProduct(data);
+      } catch (e) {
+        if (e instanceof Error) {
+          setError(e.message);
+        } else {
+          setError("unkown error");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProduct();
+  }, []);
 
 
 
+  const setCartItems = useSetAtom(cartAtom);
 
-function getProduct(id: string) {
-  const products = [
-    {
-      id: 1,
-      image: "/image/placeholder.jpg",
-      name: "simple 1",
-      price: 1234,
-      description: "nice",
-    },
-    {
-      id: 2,
-      image: "/image/placeholder.jpg",
-      name: "simple 2",
-      price: 1234,
-      description: "nice",
-    },
-    {
-      id: 3,
-      image: "/image/placeholder.jpg",
-      name: "simple 3",
-      price: 1234,
-      description: "nice",
-    },
-  ];
+const handelAddToCart = () => {
+  if (!product) return;
 
-  return products.find((product) => product.id.toString() === id);
-}
+  const newItem: CartItem = {
+    id: product.id,
+    image: product.image,
+    name: product.name,
+    price: product.price,
+    description: product.description
+  };
 
-export default  function ProductDetails() {
-  const {id} = useParams<Params>();
-  const product = getProduct(id);
-
-  if (!product) {
-    notFound();
-  }
-
-  const setCartItems = useSetAtom(cartAtom)
-
-
-  const handelAddToCart = () => {
-    setCartItems((prevItems) => {
-      return [...prevItems, {...product}]
-    })
-  }
+  setCartItems(prev => [...prev, newItem]);
+};
 
 
   return (
+
     <main className={styles.container}>
-      {!!product.name && (
-        <article className={styles.product}>
-          <h1 className={styles.title}>{product.name}</h1>
-          <section className={styles.content}>
-            <div className={styles.descriptionSection}>
-              <p className={styles.description}>{product.description}</p>
-            </div>
-            <div className={styles.imageSection}>
-              <img
-                src={product.image}
-                alt={product.name}
-                className={styles.image}
-              />
-            </div>
-          </section>
-          <hr className={styles.divider} />
-          <section className={styles.bottomSection}>
-            <p className={styles.price}>Price: ${product.price.toFixed(2)}</p>
-            <button className={styles.button} onClick={handelAddToCart}>Add to Cart</button>
-          </section>
-        </article>
+      
+      {
+        loading && <p>Loading...</p>
+      }
+      {
+        error && <p>{error}</p>
+      }
+
+
+      {!!product && (
+        <ProductDetail
+        product={product} 
+        onAddToCart={handelAddToCart}
+        />
       )}
     </main>
   );
