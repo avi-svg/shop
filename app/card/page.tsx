@@ -5,6 +5,7 @@ import { cartAtom } from "../store/CartAtom";
 import { useAtom } from "jotai";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
 const Card = () => {
   const router = useRouter();
@@ -13,10 +14,15 @@ const Card = () => {
   const [totalPrice, setTotalPrice] = useState(0);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    try {
+      const token = localStorage.getItem("token");
 
-    if (!token) {
-      router.push("/login?redirect=/card");
+      if (!token) {
+        throw new Error("no token");
+      }
+    } catch (e) {
+      localStorage.removeItem("token");
+      router.push("/login");
     }
   }, [router]);
 

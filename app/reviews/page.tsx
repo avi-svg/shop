@@ -2,15 +2,18 @@
 
 import { Review } from "@/types/ReviewsTypes";
 import styles from "./page.module.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, RefObject} from "react";
 import ReviewForm from "../components/Review/ReviewForm";
 import ReviewList from "../components/Review/ReviewList";
 
 const Reviews = () => {
   const [reviewsState, setReviewsState] = useState<Review[]>([]);
-
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [fetching, setFetching] = useState(false);
+
+  const reviewsContainerRef = useRef<HTMLDivElement | null>(null)
 
   const handleAddReview = (newReview: Review) => {
     setReviewsState((prev) => {
@@ -21,12 +24,14 @@ const Reviews = () => {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await fetch("http://localhost:3001/api/reviews");
+        const response = await fetch(`http://localhost:3001/api/reviews?${page}&limit=5`);
         if (!response.ok) {
           throw new Error("Failed to fetch reviews");
         }
         const data = await response.json();
-        setReviewsState(data);
+
+        setReviewsState((prevData => [...prevData, ...data]));
+        console.log(data.length)
       } catch (e) {
         if (e instanceof Error) {
           setError(e.message);
@@ -41,6 +46,25 @@ const Reviews = () => {
     fetchReviews();
   }, []);
 
+
+  useEffect(() => {
+    const container = reviewsContainerRef.current;
+    container?.addEventListener('scroll', handelScroll);
+    
+    return () => {
+      container?.removeEventListener('scroll', handelScroll);
+    }
+  }, [loading, fetching])
+
+      const handelScroll = () => {
+        if (reviewsContainerRef.current) {
+            const { scrollTop, scrollHeight, clientHeight } = reviewsContainerRef.current;
+            if (scrollTop + clientHeight >= scrollHeight - 5 && !fetching && !loading) {
+                setPage((prevPage) => prevPage + 1); // Fetch the next page
+            }
+        }
+    }
+
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Product Reviews</h1>
@@ -52,7 +76,7 @@ const Reviews = () => {
         error && <p>{error}</p>
       }
 
-      <ReviewList reviewsState={reviewsState} />
+      <ReviewList reviewsState={reviewsState} reviewsContainerRef={reviewsContainerRef}/>
       <ReviewForm onAddReview={handleAddReview} />
     </div>
   );

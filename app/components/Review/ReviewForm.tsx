@@ -4,6 +4,7 @@ import { BaseSyntheticEvent, useState } from "react";
 
 const ReviewForm = ({ onAddReview }: ReviewFormProps) => {
   const [newReview, setNewReview] = useState<Review>({
+    
     name: "",
     review: "",
   });
@@ -22,6 +23,7 @@ const ReviewForm = ({ onAddReview }: ReviewFormProps) => {
     if (newReview.name && newReview.review) {
         onAddReview(newReview);      
         setNewReview({
+            
             name: "",
             review: "",
         });

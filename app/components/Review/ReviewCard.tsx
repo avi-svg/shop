@@ -3,9 +3,9 @@ import styles from "./ReviewCard.module.css";
 
 
 
-const ReviewCard = ({id, name, review}: Review) => {
+const ReviewCard = ({_id, name, review}: Review) => {
   return (
-    <div key={id} className={styles.reviewCard}>
+    <div key={_id} className={styles.reviewCard}>
       <h3 className={styles.reviewerName}>{name}</h3>
       <p className={styles.reviewContant}>{review}</p>
     </div>

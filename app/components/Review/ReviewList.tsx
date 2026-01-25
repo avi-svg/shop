@@ -4,13 +4,13 @@ import styles from './ReviewList.module.css';
 
 
 
-const ReviewList = ({reviewsState}: ReviewListProps) => {
+const ReviewList = ({reviewsState, reviewsContainerRef}: ReviewListProps) => {
     return(
-        <div className={styles.reviewList}>
+        <div className={styles.reviewList} ref={reviewsContainerRef}>
         {reviewsState.map((review) => {
             return(
             <ReviewCard 
-                key={review.id}
+                key={review._id}
                 name={review.name}
                 review={review.review}
             />
