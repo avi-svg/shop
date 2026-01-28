@@ -1,8 +1,10 @@
-'use client'
+"use client";
 
+import { useAtom } from "jotai";
 import styles from "./Navbar.module.css";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { cartAtom } from "@/app/store/CartAtom";
 
 export default function Navbar() {
   const router = useRouter();
@@ -15,12 +17,15 @@ export default function Navbar() {
       router.push("/card");
     }
   };
-
+  const [cartItems,] = useAtom(cartAtom);
   return (
     <nav className={styles.navbar}>
       <div className={styles.left}>
         <nav className={styles.link}>
-          <button onClick={handleCartClick}>My Cart</button>
+        <div className={styles.cartContainer}>
+            <button onClick={handleCartClick}>My Cart</button>
+            {cartItems.length > 0 && <span className={styles.cartBadge}>{cartItems.length}</span>}
+          </div>
         </nav>
       </div>
       <div className={styles.right}>

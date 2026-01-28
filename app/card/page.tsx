@@ -35,6 +35,39 @@ const Card = () => {
     setCartItems([]);
   };
 
+  const handelPayNow = async () => {
+    try {
+      console.log('CLIENT SEND');
+      const response = await fetch("http://localhost:3001/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          totalAmount: totalPrice,
+          totalQuantity: cartItems.reduce((sum, current) => (sum += current.quantity), 0),
+          cartItems: cartItems.map(({id: product_id,quantity: quantity, price: price}) => ({
+            product_id,
+            quantity,
+            price,
+          }))
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch order");
+      }
+
+      const data = await response.json();
+
+      console.log(data)
+      alert("sucses");     
+
+    } catch (e) {
+      console.log(e, "error");
+    }
+  };
+
   return (
     <div className={styles.container}>
       <h1 className={styles.mainHeader}>Cart</h1>
@@ -53,7 +86,7 @@ const Card = () => {
       </div>
 
       <div className={styles.actions}>
-        <button className={styles.payButton}>Pay Now</button>
+        <button className={styles.payButton} onClick={handelPayNow}>Pay Now</button>
         <button className={styles.emptyButton} onClick={enptyCart}>
           Empty the Cart
         </button>

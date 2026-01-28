@@ -2,17 +2,11 @@
 
 import ProductList from "../components/Product/ProductList";
 import styles from "./page.module.css";
-import { cartAtom } from "../store/CartAtom";
+import { addToCartAtom, cartAtom } from "../store/CartAtom";
 import { useSetAtom } from "jotai";
 import { useState, useEffect } from "react";
+import { Product, productToCartItem } from "@/types/ProductsTypes";
 
-type Product = {
-  id: number;
-  image: string;
-  name: string;
-  price: number;
-  description: string;
-};
 
 export default function Products() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -43,12 +37,11 @@ export default function Products() {
     fetchProduct();
   }, []);
 
-  const setCartItems = useSetAtom(cartAtom);
+  const setCartItems = useSetAtom(addToCartAtom);
 
   const handelAddToCart = (product: Product) => {
-    setCartItems((prevItems) => {
-      return [...prevItems, { ...product }];
-    });
+    const tempProduct = productToCartItem(product);
+    setCartItems(tempProduct);
   };
 
   return (

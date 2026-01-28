@@ -2,7 +2,7 @@
 
 import { Review } from "@/types/ReviewsTypes";
 import styles from "./page.module.css";
-import { useState, useEffect, useRef, RefObject} from "react";
+import { useState, useEffect, useRef} from "react";
 import ReviewForm from "../components/Review/ReviewForm";
 import ReviewList from "../components/Review/ReviewList";
 
@@ -24,14 +24,19 @@ const Reviews = () => {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/api/reviews?${page}&limit=5`);
+        const response = await fetch(`http://localhost:3001/api/reviews?page=${page}&limit=5`);
         if (!response.ok) {
           throw new Error("Failed to fetch reviews");
         }
+        
         const data = await response.json();
 
-        setReviewsState((prevData => [...prevData, ...data]));
-        console.log(data.length)
+
+        setReviewsState((prevData) => {
+          console.log(data)
+          return [...prevData, ...data]
+        });
+        
       } catch (e) {
         if (e instanceof Error) {
           setError(e.message);
@@ -44,7 +49,7 @@ const Reviews = () => {
     };
 
     fetchReviews();
-  }, []);
+  }, [page]);
 
 
   useEffect(() => {
@@ -60,7 +65,7 @@ const Reviews = () => {
         if (reviewsContainerRef.current) {
             const { scrollTop, scrollHeight, clientHeight } = reviewsContainerRef.current;
             if (scrollTop + clientHeight >= scrollHeight - 5 && !fetching && !loading) {
-                setPage((prevPage) => prevPage + 1); // Fetch the next page
+                setPage((prevPage) => prevPage + 1);
             }
         }
     }

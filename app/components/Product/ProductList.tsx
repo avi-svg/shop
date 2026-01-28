@@ -22,7 +22,7 @@ type Props = {
 
 const ProductList = ({ products, onProductAddClicked}: Props) => {
   return (
-    <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
+    <div style={{ display: "flex", gap: "16px", flexWrap: "wrap", justifyContent: "center"}}>
       {products.map((product) => {
         return (
           <ProductCard
