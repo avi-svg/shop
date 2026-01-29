@@ -1,18 +1,18 @@
 "use client";
 
 import styles from "./page.module.css";
-import { cartAtom } from "../store/CartAtom";
-import { useAtom } from "jotai";
-import { useState, useEffect } from "react";
+import { addToCartAtom, cartAtom, decresseItemCartAtom} from "../store/CartAtom";
+import { useAtom, useSetAtom } from "jotai";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import jwt, { JwtPayload } from "jsonwebtoken";
+
 
 const Card = () => {
   const router = useRouter();
   const [cartItems, setCartItems] = useAtom(cartAtom);
 
   const [totalPrice, setTotalPrice] = useState(0);
-
+  
   useEffect(() => {
     try {
       const token = localStorage.getItem("token");
@@ -38,6 +38,11 @@ const Card = () => {
   const handelPayNow = async () => {
     try {
       console.log('CLIENT SEND');
+      const totalQuantity = cartItems.reduce((sum, current) => (sum += current.quantity), 0);
+      if(totalQuantity == 0){
+        alert("No orders!")
+        return;
+      }
       const response = await fetch("http://localhost:3001/api/orders", {
         method: "POST",
         headers: {
@@ -45,7 +50,7 @@ const Card = () => {
         },
         body: JSON.stringify({
           totalAmount: totalPrice,
-          totalQuantity: cartItems.reduce((sum, current) => (sum += current.quantity), 0),
+          totalQuantity: totalQuantity,
           cartItems: cartItems.map(({id: product_id,quantity: quantity, price: price}) => ({
             product_id,
             quantity,
@@ -68,14 +73,19 @@ const Card = () => {
     }
   };
 
+  const encreaseQuantity = useSetAtom(addToCartAtom) 
+  const decresse = useSetAtom(decresseItemCartAtom)
   return (
     <div className={styles.container}>
       <h1 className={styles.mainHeader}>Cart</h1>
       <ul>
         {cartItems.map((item) => (
           <li key={item.id} className={styles.cartItem}>
+            <button onClick={() => (encreaseQuantity(item))}>+</button>
             <span className={styles.itemName}>{item.name}</span>
+            <span className="">Quantity: {item.quantity}</span>
             <span className={styles.itemPrice}>₪{item.price.toFixed(2)}</span>
+            <button onClick={() => (decresse(item))}>-</button>
           </li>
         ))}
       </ul>

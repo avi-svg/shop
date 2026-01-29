@@ -18,13 +18,14 @@ export default function Navbar() {
     }
   };
   const [cartItems,] = useAtom(cartAtom);
+  const totalItems = cartItems.reduce((sum, item) =>  (sum += item.quantity), 0)
   return (
     <nav className={styles.navbar}>
       <div className={styles.left}>
         <nav className={styles.link}>
         <div className={styles.cartContainer}>
             <button onClick={handleCartClick}>My Cart</button>
-            {cartItems.length > 0 && <span className={styles.cartBadge}>{cartItems.length}</span>}
+            {cartItems.length > 0 && <span className={styles.cartBadge}>{totalItems}</span>}
           </div>
         </nav>
       </div>
