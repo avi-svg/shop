@@ -24,7 +24,7 @@ const Reviews = () => {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/api/reviews?page=${page}&limit=5`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/reviews?page=${page}&limit=5`);
         if (!response.ok) {
           throw new Error("Failed to fetch reviews");
         }
