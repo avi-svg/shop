@@ -1,0 +1,54 @@
+'use client'
+
+import { useState } from "react";
+import { login } from "./services/api";
+import { useDispatch } from "react-redux";
+import { setAuthenticated } from "../features/auth/authSlice";
+import { useRouter } from "next/navigation";
+
+
+
+export default function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const dispatch = useDispatch();
+ const router = useRouter();
+ 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await login(email, password);
+      // הצלחה → redirect / update state
+      dispatch(setAuthenticated());
+      
+      router.push("/card");
+      
+    } catch {
+      setError("אימייל או סיסמה שגויים");
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
+
+      <button type="submit">Login</button>
+
+      {error && <p>{error}</p>}
+    </form>
+  );
+}
