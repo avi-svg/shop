@@ -1,7 +1,7 @@
 
 
 export const login = async (email: string, password: string) => {
-  const res = await fetch("http://localhost:3001/api/auth/login", {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -31,7 +31,7 @@ export const logout = async () => {
 
 
 export const refresh = async () => {
-  const res = await fetch("http://localhost:3001/api/auth/refresh", {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/refresh`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -45,7 +45,7 @@ export const refresh = async () => {
 
 
 export const register = async (email: string, password: string) => {
-  const res = await fetch("http://localhost:3001/api/auth/register", {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
