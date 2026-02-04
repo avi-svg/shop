@@ -17,16 +17,33 @@ const ReviewForm = ({ onAddReview }: ReviewFormProps) => {
     });
   };
 
-  const handelSendReview = (event: BaseSyntheticEvent) => {
+  const handelSendReview = async (event: BaseSyntheticEvent) => {
     event.preventDefault();
 
     if (newReview.name && newReview.review) {
+
+      try{
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/reviews`, {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(newReview)
+        })
+        if(!res.ok){
+          throw new Error("failed to fetch");
+        }
         onAddReview(newReview);      
         setNewReview({
             
             name: "",
             review: "",
         });
+      }catch(e){
+        alert("error sending!")
+      }
+
+
     }
   };
 
